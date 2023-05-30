@@ -12,7 +12,7 @@ const dfd = require("danfojs-node");
 
 const unitModel = require("./model/unit_model");
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
 ///Middleware
 app.use(cors());
