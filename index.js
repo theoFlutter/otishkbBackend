@@ -69,6 +69,10 @@ const DB = mongoose
         res.status(404).send(e);
       }
     });
+
+    app.get("/dataTest", (req, res)=>{
+      console.log('dataTest');
+    });
   })
   .catch((e) => {
     console.log(e);
