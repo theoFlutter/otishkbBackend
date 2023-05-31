@@ -72,6 +72,7 @@ const DB = mongoose
 
     app.get("/dataTest", (req, res)=>{
       console.log('dataTest');
+      res.json('dataTest');
     });
   })
   .catch((e) => {
