@@ -78,7 +78,9 @@ const DB = mongoose
 
   cron.schedule("*/20 * * * * *", ()=>{
     http.get('https://otishkb.onrender.com/test', (res) =>{
-      console.log('pinged');
+      res.on("close", ()=>{
+        console.log("Server is running");
+      })
     })
   })
 
