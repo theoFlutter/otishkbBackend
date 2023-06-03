@@ -31,9 +31,7 @@ app.use(function (req, res, next) {
 ///Connect to DB
 const mongoose = require("mongoose");
 const e = require("express");
-
-cron.schedule("*/10 * * * *", ()=>{
-  const DB = mongoose
+const DB = mongoose
   .connect(
     "mongodb+srv://otishkb:otishkb@hkb.ufaln9r.mongodb.net/?retryWrites=true&w=majority"
   )
@@ -73,19 +71,16 @@ cron.schedule("*/10 * * * *", ()=>{
       }
     });
 
-    app.get("/dataTest", (req, res)=>{
-      console.log('dataTest');
-      res.json('dataTest');
-    });
   })
   .catch((e) => {
     console.log(e);
   });
-})
 
-
-
-
+  cron.schedule("*/10 * * * *", ()=>{
+    http.get('https://otishkb.onrender.com/test', (res) =>{
+    res.statusCode(200).then(console.log(res.data));
+    })
+  })
 
 ///Downloading the template
 app.get("/downloadTemplate", async (req, res) => {
