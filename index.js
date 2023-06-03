@@ -76,9 +76,9 @@ const DB = mongoose
     console.log(e);
   });
 
-  cron.schedule("*/10 * * * *", ()=>{
+  cron.schedule("*/20 * * * * *", ()=>{
     http.get('https://otishkb.onrender.com/test', (res) =>{
-    res.statusCode(200).then(console.log(res.data));
+      console.log('pinged');
     })
   })
 
