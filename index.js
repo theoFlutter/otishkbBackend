@@ -32,7 +32,7 @@ app.use(function (req, res, next) {
 const mongoose = require("mongoose");
 const e = require("express");
 
-cron.schedule("* */10 * * * *", ()=>{
+cron.schedule("*/10 * * * *", ()=>{
   const DB = mongoose
   .connect(
     "mongodb+srv://otishkb:otishkb@hkb.ufaln9r.mongodb.net/?retryWrites=true&w=majority"
