@@ -3,6 +3,7 @@ const http = require("http");
 const app = express();
 const server = http.createServer(app);
 const cors = require("cors");
+const cron = require("node-cron");
 
 const fs = require("fs");
 const path = require("path");
@@ -30,12 +31,14 @@ app.use(function (req, res, next) {
 ///Connect to DB
 const mongoose = require("mongoose");
 const e = require("express");
-const DB = mongoose
+
+cron.schedule("* */10 * * * *", ()=>{
+  const DB = mongoose
   .connect(
     "mongodb+srv://otishkb:otishkb@hkb.ufaln9r.mongodb.net/?retryWrites=true&w=majority"
   )
   .then(() => {
-    console.log("Database connected");
+    console.log("Database is running");
 
     //updateData();
 
@@ -78,6 +81,9 @@ const DB = mongoose
   .catch((e) => {
     console.log(e);
   });
+})
+
+
 
 
 
