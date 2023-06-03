@@ -1,5 +1,6 @@
 const express = require("express");
 const http = require("http");
+const axios = require("axios");
 const app = express();
 const server = http.createServer(app);
 const cors = require("cors");
@@ -76,13 +77,11 @@ const DB = mongoose
     console.log(e);
   });
 
-  cron.schedule("*/20 * * * * *", ()=>{
-    http.get('https://otishkb.onrender.com/test', (res) =>{
-      res.on("end", ()=>{
-        console.log("Server is running");
-      })
-    })
-  })
+cron.schedule("*/10 * * * *", ()=>{
+  axios.get('https://otishkb.onrender.com/test').then((res)=>{
+    console.log(res.data);
+  }).catch((e)=>{console.log(e)});
+})
 
 ///Downloading the template
 app.get("/downloadTemplate", async (req, res) => {
