@@ -3,8 +3,8 @@ const http = require("http");
 const axios = require("axios");
 const app = express();
 const server = http.createServer(app);
-const cors = require("cors");
 const cron = require("node-cron");
+const cors = require("cors");
 
 const fs = require("fs");
 const path = require("path");
@@ -31,7 +31,7 @@ app.use(function (req, res, next) {
 
 ///Connect to DB
 const mongoose = require("mongoose");
-const e = require("express");
+
 const DB = mongoose
   .connect(
     "mongodb+srv://otishkb:otishkb@hkb.ufaln9r.mongodb.net/?retryWrites=true&w=majority"
@@ -77,19 +77,11 @@ const DB = mongoose
     console.log(e);
   });
 
-cron.schedule("*/10 * * * *", ()=>{
+cron.schedule("*/8 * * * *", ()=>{
   axios.get('https://otishkb.onrender.com/test').then((res)=>{
     console.log(res.data);
   }).catch((e)=>{console.log(e)});
 })
-
-///Downloading the template
-app.get("/downloadTemplate", async (req, res) => {
-  const templateFile =
-    "C:/Users/theol/StudioProjects/hkb_database/server/file/template/template.xlsx";
-  console.log(templateFile);
-  res.download(templateFile);
-});
 
 app.get("/test", async (req, res) => {
   console.log('test');
@@ -138,7 +130,7 @@ app.get("/generateSuspensionLetter", async (req, res) => {
 app.post('/upload', async (req, res) => {
 
   try{
-      
+      updateData();
 
   }catch(e){
     console.log(e);
@@ -150,13 +142,12 @@ app.post('/upload', async (req, res) => {
 
 const updateData = async (req, res) => {
   try {
-    const file = await dfd.readExcel("./file/template/template.xlsx");
+    const file = await dfd.readExcel(path.resolve(__dirname, "./file/template/template.xlsx"));
     const jsonData = dfd.toJSON(file);
-
+  
     // DataFrame example
     // const df = new dfd.DataFrame(jsonData);
     // df.print();
-
 
 // The issue is that jsonData.forEach() is an asynchronous function that does not block the execution of the console.log('Data Process updated') statement.
 // This means that the code inside jsonData.forEach() will run in the background while the code after it continues to execute. As a result, console.log('Data Process updated') is executed before jsonData.forEach() is finished.
