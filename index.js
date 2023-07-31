@@ -99,10 +99,10 @@ const DB = mongoose
 //   }).catch((e)=>{console.log(e)});
 // })
 
-// app.get("/test", async (req, res) => {
-//   console.log('test');
-//   res.json('test');
-// });
+app.get("/test", async (req, res) => {
+  console.log('test');
+  res.json('test');
+});
 
 ///Endpoint for generating new letter
 app.get("/generateSuspensionLetter", async (req, res) => {
