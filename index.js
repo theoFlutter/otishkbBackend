@@ -99,8 +99,7 @@ const DB = mongoose
 //   }).catch((e)=>{console.log(e)});
 // })
 
-app.get("/test", async (req, res) => {
-  console.log('test');
+app.get("/", async (req, res) => {
   res.json('test');
 });
 
@@ -147,13 +146,9 @@ app.post('/upload', async (req, res) => {
 
   try{
       uploadData();
-
   }catch(e){
     console.log(e);
   }
-
-
-
 });
 
 const uploadData = async (req, res) => {
