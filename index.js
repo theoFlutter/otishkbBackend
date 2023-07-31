@@ -39,7 +39,8 @@ const DB = mongoose
   .then(() => {
     console.log("Database is running");
 
-    //updateData();
+    //uploadData();
+    //dataHandling();
 
     app.post("/addNewUnit", async (req, res) => {
       try {
@@ -62,31 +63,46 @@ const DB = mongoose
       }
     });
 
-    app.get("/fetchUnitDetail", async (req, res) => {
+    app.get("/fetchUnitDetail/:id", async (req, res) => {
       try {
-        let query = await req.query;
-        let data = await unitModel.findOne(query);
+        let {id} = await req.params;
+        let data = await unitModel.findById(id);
         res.status(200).json(data);
+
       } catch (e) {
         res.status(404).send(e);
       }
     });
+
+    app.put("/editData/:id", async (req, res) =>{
+      try{
+        let {id} = await req.params
+        let query = await req.query;
+        let data = await unitModel.findByIdAndUpdate(id, query);
+        const updatedData = await unitModel.findById(id);
+        console.log(updatedData);
+        console.log('Update susscess'); 
+        res.status(200).json(updatedData);
+      }catch(e){
+        res.status(404).send(e);
+      }
+    })
 
   })
   .catch((e) => {
     console.log(e);
   });
 
-cron.schedule("*/8 * * * *", ()=>{
-  axios.get('https://otishkb.onrender.com/test').then((res)=>{
-    console.log(res.data);
-  }).catch((e)=>{console.log(e)});
-})
+// cron.schedule("*/8 * * * *", ()=>{
+//   axios.get('https://otishkb.onrender.com/test').then((res)=>{
+//     console.log(res.data);
+//   }).catch((e)=>{console.log(e)});
+// })
 
-app.get("/test", async (req, res) => {
-  console.log('test');
-  res.json('test');
-});
+// app.get("/test", async (req, res) => {
+//   console.log('test');
+//   res.json('test');
+// });
 
 ///Endpoint for generating new letter
 app.get("/generateSuspensionLetter", async (req, res) => {
@@ -130,7 +146,7 @@ app.get("/generateSuspensionLetter", async (req, res) => {
 app.post('/upload', async (req, res) => {
 
   try{
-      updateData();
+      uploadData();
 
   }catch(e){
     console.log(e);
@@ -140,7 +156,7 @@ app.post('/upload', async (req, res) => {
 
 });
 
-const updateData = async (req, res) => {
+const uploadData = async (req, res) => {
   try {
     const file = await dfd.readExcel(path.resolve(__dirname, "./file/template/template.xlsx"));
     const jsonData = dfd.toJSON(file);
