@@ -3,14 +3,13 @@ const http = require("http");
 const axios = require("axios");
 const app = express();
 const server = http.createServer(app);
-const cron = require("node-cron");
 const cors = require("cors");
 
 const fs = require("fs");
 const path = require("path");
 const pizZip = require("pizzip");
 const docxtemplater = require("docxtemplater");
-const dfd = require("danfojs-node");
+//const dfd = require("danfojs-node");
 
 const unitModel = require("./model/unit_model");
 
@@ -151,10 +150,10 @@ app.post('/upload', async (req, res) => {
   }
 });
 
-const uploadData = async (req, res) => {
-  try {
-    const file = await dfd.readExcel(path.resolve(__dirname, "./file/template/template.xlsx"));
-    const jsonData = dfd.toJSON(file);
+// const uploadData = async (req, res) => {
+//   try {
+//     const file = await dfd.readExcel(path.resolve(__dirname, "./file/template/template.xlsx"));
+//     const jsonData = dfd.toJSON(file);
   
     // DataFrame example
     // const df = new dfd.DataFrame(jsonData);
@@ -164,24 +163,24 @@ const uploadData = async (req, res) => {
 // This means that the code inside jsonData.forEach() will run in the background while the code after it continues to execute. As a result, console.log('Data Process updated') is executed before jsonData.forEach() is finished.
 // To fix this, you can use a for...of loop instead of jsonData.forEach(). The for...of loop will wait for each iteration to finish before moving on to the next one, ensuring that all the data is processed before the console.log() statement is executed.
 
-    for (let item of jsonData) {
-      let newUnit = unitModel(item);
-      const anyExisting = await unitModel
-        .findOne({ unitNo: item.unitNo })
-        .exec();
+//     for (let item of jsonData) {
+//       let newUnit = unitModel(item);
+//       const anyExisting = await unitModel
+//         .findOne({ unitNo: item.unitNo })
+//         .exec();
 
-      if (anyExisting == null) {
-        newUnit.save();
-        console.log(`${item.unitNo} added`);
-      } else {
-        console.log(`${item.unitNo} already exists`);
-      }
-    }
-    console.log("Data Process updated");
-  } catch (e) {
-    console.log(e);
-  }
-};
+//       if (anyExisting == null) {
+//         newUnit.save();
+//         console.log(`${item.unitNo} added`);
+//       } else {
+//         console.log(`${item.unitNo} already exists`);
+//       }
+//     }
+//     console.log("Data Process updated");
+//   } catch (e) {
+//     console.log(e);
+//   }
+// };
 
 server.listen(PORT, () => {
   console.log("Server Connected");
