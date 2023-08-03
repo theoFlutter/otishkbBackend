@@ -87,6 +87,61 @@ const DB = mongoose
       }
     })
 
+    app.get("/", async (req, res) => {
+      res.json('test');
+    });
+    
+    ///Endpoint for generating new letter
+    app.get("/generateSuspensionLetter", async (req, res) => {
+      const content = fs.readFileSync(
+        path.resolve(__dirname, "./file/noticeTemplate.docx"),
+        "binary"
+      );
+      const zip = new pizZip(content);
+      const doc = new docxtemplater(zip);
+    
+      const data = {
+        letterIndex: req.query.letterIndex,
+        buildingName: req.query.buildingName,
+        liftNumber: req.query.liftNumber,
+        unitNumber: req.query.unitNumber,
+        workCN: req.query.workCN,
+        workEN: req.query.workEN,
+        startDate: req.query.startDate,
+        endDate: req.query.endDate,
+        startTime: req.query.startTime,
+        endTime: req.query.endTime,
+      };
+    
+      console.log(data);
+    
+      doc.render(data);
+    
+      const output = doc.getZip().generate({ type: "nodebuffer" });
+      fs.writeFileSync(
+        path.resolve(
+          __dirname,
+          `./file/${data.buildingName}_${data.unitNumber}_${data.workEN}.docx`
+        ),
+        output
+      );
+    
+      console.log("Success");
+      res.send("Letter generated success");
+    });
+    
+    app.post('/upload', async (req, res) => {
+    
+      try{
+          uploadData();
+      }catch(e){
+        console.log(e);
+      }
+    });
+    server.listen(PORT, () => {
+      console.log("Server Connected");
+    });
+
   })
   .catch((e) => {
     console.log(e);
@@ -98,57 +153,7 @@ const DB = mongoose
 //   }).catch((e)=>{console.log(e)});
 // })
 
-app.get("/", async (req, res) => {
-  res.json('test');
-});
 
-///Endpoint for generating new letter
-app.get("/generateSuspensionLetter", async (req, res) => {
-  const content = fs.readFileSync(
-    path.resolve(__dirname, "./file/noticeTemplate.docx"),
-    "binary"
-  );
-  const zip = new pizZip(content);
-  const doc = new docxtemplater(zip);
-
-  const data = {
-    letterIndex: req.query.letterIndex,
-    buildingName: req.query.buildingName,
-    liftNumber: req.query.liftNumber,
-    unitNumber: req.query.unitNumber,
-    workCN: req.query.workCN,
-    workEN: req.query.workEN,
-    startDate: req.query.startDate,
-    endDate: req.query.endDate,
-    startTime: req.query.startTime,
-    endTime: req.query.endTime,
-  };
-
-  console.log(data);
-
-  doc.render(data);
-
-  const output = doc.getZip().generate({ type: "nodebuffer" });
-  fs.writeFileSync(
-    path.resolve(
-      __dirname,
-      `./file/${data.buildingName}_${data.unitNumber}_${data.workEN}.docx`
-    ),
-    output
-  );
-
-  console.log("Success");
-  res.send("Letter generated success");
-});
-
-app.post('/upload', async (req, res) => {
-
-  try{
-      uploadData();
-  }catch(e){
-    console.log(e);
-  }
-});
 
 // const uploadData = async (req, res) => {
 //   try {
@@ -182,6 +187,4 @@ app.post('/upload', async (req, res) => {
 //   }
 // };
 
-server.listen(PORT, () => {
-  console.log("Server Connected");
-});
+
