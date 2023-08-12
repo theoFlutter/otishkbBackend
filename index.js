@@ -73,15 +73,12 @@ const DB = mongoose
       }
     });
 
-    app.put("/editData/:id", async (req, res) =>{
+    app.patch("/editData/:id", async (req, res) =>{
       try{
-        let {id} = await req.params
-        let query = await req.query;
-        let data = await unitModel.findByIdAndUpdate(id, query);
-        const updatedData = await unitModel.findById(id);
-        console.log(updatedData);
+        let {id} = await req.params;
+        let object = await req.body;
+        let updatedData = await unitModel.findByIdAndUpdate(id, object);
         console.log('Update susscess'); 
-        res.status(200).json(updatedData);
       }catch(e){
         res.status(404).send(e);
       }
@@ -146,13 +143,6 @@ const DB = mongoose
   .catch((e) => {
     console.log(e);
   });
-
-// cron.schedule("*/8 * * * *", ()=>{
-//   axios.get('https://otishkb.onrender.com/test').then((res)=>{
-//     console.log(res.data);
-//   }).catch((e)=>{console.log(e)});
-// })
-
 
 
 // const uploadData = async (req, res) => {
