@@ -85,7 +85,7 @@ const DB = mongoose
     })
 
     app.get("/", async (req, res) => {
-      res.json(path.dirname);
+      res.json(path.__dirname);
       // res.json(path.dirname);
       // res.json(path.relative);
     });
