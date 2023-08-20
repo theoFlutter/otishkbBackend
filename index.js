@@ -85,7 +85,9 @@ const DB = mongoose
     })
 
     app.get("/", async (req, res) => {
-      res.json('test');
+      res.json(path.join(__dirname));
+      // res.json(path.dirname);
+      // res.json(path.relative);
     });
     
     ///Endpoint for generating new letter
@@ -156,11 +158,10 @@ const DB = mongoose
       let newWS = XLSX.utils.json_to_sheet(customerData);
       let newWB = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(newWB, newWS, 'CustomerData');
-      XLSX.writeFile(newWB, './file/CustomerData.xlsx', {
-
-        compression: true,
-      });
-      res.download('./file/CustomerData.xlsx');
+      // XLSX.writeFile(newWB, fs.mkdtemp, {
+      //   compression: true,
+      // });
+      // res.download(fs.mkdtempSync.newWB);
 
     })
 
