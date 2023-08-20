@@ -85,7 +85,7 @@ const DB = mongoose
     })
 
     app.get("/", async (req, res) => {
-      res.json(path.join(__dirname, __filename));
+      res.json(path.join(__dirname));
       // res.json(path.dirname);
       // res.json(path.relative);
     });
@@ -158,10 +158,10 @@ const DB = mongoose
       let newWS = XLSX.utils.json_to_sheet(customerData);
       let newWB = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(newWB, newWS, 'CustomerData');
-      XLSX.writeFile(newWB, path.__dirname, {
+      XLSX.writeFile(newWB, path.join(__dirname), {
         compression: true,
       });
-      // res.download(fs.mkdtempSync.newWB);
+      res.download(path.join(__dirname, '/CustomerData.xlsx'));
 
     })
 
