@@ -4,12 +4,12 @@ const axios = require("axios");
 const app = express();
 const server = http.createServer(app);
 const cors = require("cors");
+const XLSX = require('xlsx');
 
 const fs = require("fs");
 const path = require("path");
 const pizZip = require("pizzip");
 const docxtemplater = require("docxtemplater");
-//const dfd = require("danfojs-node");
 
 const unitModel = require("./model/unit_model");
 
@@ -77,7 +77,7 @@ const DB = mongoose
       try{
         let {id} = await req.params;
         let object = await req.body;
-        let updatedData = await unitModel.findByIdAndUpdate(id, object);
+        await unitModel.findByIdAndUpdate(id, object);
         console.log('Update susscess'); 
       }catch(e){
         res.status(404).send(e);
@@ -110,7 +110,6 @@ const DB = mongoose
         endTime: req.query.endTime,
       };
     
-      console.log(data);
     
       doc.render(data);
     
@@ -135,6 +134,40 @@ const DB = mongoose
         console.log(e);
       }
     });
+
+    app.get('/downloadCustomerData', async(req, res)=>{
+
+      let jsonData = await unitModel.find();
+      let customerData = jsonData.map(row=>({
+        unitNo: row.unitNo,
+        unitName: row.unitName,
+        customerName: row.customerName,
+        customerAdd: row.customerAdd,
+        customerfax: row.customerfax,
+        customerMainContact: row.customerMainContact,
+        customerMainContactTel: row.customerMainContactTel,
+        customerMainContactEmail: row.customerMainContactEmail,
+        customerSecondContact: row.customerSecondContact,
+        customerSecondContactTel: row.customerSecondContactTel,
+        customerSecondContactEmail: row.customerSecondContactEmail,
+        customerRemarks: row.customerRemarks,
+      }));
+
+      let newWS = XLSX.utils.json_to_sheet(customerData);
+      let newWB = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(newWB, newWS, 'CustomerData');
+      XLSX.writeFile(newWB, './file/CustomerData.xlsx', {
+
+        compression: true,
+      });
+      res.download('./file/CustomerData.xlsx');
+
+    })
+
+
+
+
+
     server.listen(PORT, () => {
       console.log("Server Connected");
     });
@@ -145,36 +178,34 @@ const DB = mongoose
   });
 
 
-// const uploadData = async (req, res) => {
-//   try {
-//     const file = await dfd.readExcel(path.resolve(__dirname, "./file/template/template.xlsx"));
-//     const jsonData = dfd.toJSON(file);
-  
-    // DataFrame example
-    // const df = new dfd.DataFrame(jsonData);
-    // df.print();
+const uploadData = async (req, res) => {
+  try {
+
+    const workbook = await XLSX.readFile(path.resolve(__dirname, "./file/template/template.xlsx"));
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
 
 // The issue is that jsonData.forEach() is an asynchronous function that does not block the execution of the console.log('Data Process updated') statement.
 // This means that the code inside jsonData.forEach() will run in the background while the code after it continues to execute. As a result, console.log('Data Process updated') is executed before jsonData.forEach() is finished.
 // To fix this, you can use a for...of loop instead of jsonData.forEach(). The for...of loop will wait for each iteration to finish before moving on to the next one, ensuring that all the data is processed before the console.log() statement is executed.
 
-//     for (let item of jsonData) {
-//       let newUnit = unitModel(item);
-//       const anyExisting = await unitModel
-//         .findOne({ unitNo: item.unitNo })
-//         .exec();
+    for (let item of jsonData) {
+      let newUnit = unitModel(item);
+      const anyExisting = await unitModel
+        .findOne({ unitNo: item.unitNo })
+        .exec();
 
-//       if (anyExisting == null) {
-//         newUnit.save();
-//         console.log(`${item.unitNo} added`);
-//       } else {
-//         console.log(`${item.unitNo} already exists`);
-//       }
-//     }
-//     console.log("Data Process updated");
-//   } catch (e) {
-//     console.log(e);
-//   }
-// };
+      if (anyExisting == null) {
+        newUnit.save();
+        console.log(`${item.unitNo} added`);
+      } else {
+        console.log(`${item.unitNo} already exists`);
+      }
+    }
+    console.log("Data Process updated");
+  } catch (e) {
+    console.log(e);
+  }
+};
 
 
