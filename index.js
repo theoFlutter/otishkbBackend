@@ -5,8 +5,10 @@ const app = express();
 const server = http.createServer(app);
 const cors = require("cors");
 const XLSX = require('xlsx');
+const dotenv = require('dotenv');
+dotenv.config();
 
-const fs = require("fs");
+const fs = require("@cyclic.sh/s3fs")(process.env.CYCLIC_BUCKET_NAME);
 const path = require("path");
 const pizZip = require("pizzip");
 const docxtemplater = require("docxtemplater");
@@ -158,10 +160,10 @@ const DB = mongoose
       let newWS = XLSX.utils.json_to_sheet(customerData);
       let newWB = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(newWB, newWS, 'CustomerData');
-      XLSX.writeFile(newWB, path.join(__dirname), {
+      XLSX.writeFile(newWB, 'CustomerData.xlsx', {
         compression: true,
       });
-      res.download(path.join(__dirname, '/CustomerData.xlsx'));
+      res.download('CustomerData.xlsx');
 
     })
 
