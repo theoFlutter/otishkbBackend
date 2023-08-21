@@ -87,10 +87,16 @@ const DB = mongoose
     })
 
     app.get("/", async (req, res) => {
-      res.json(path.join(__dirname));
-      // res.json(path.dirname);
-      // res.json(path.relative);
+      fs.writeFileSync('my_file.txt', new Date().toISOString())
+      return res.send('Hello World!');
     });
+
+    app.get('/contents', async (req, res) => {
+      console.log('/contents route')
+      let content = fs.readFileSync('my_file.txt').toString()
+       
+      return res.send(content);
+  });
     
     ///Endpoint for generating new letter
     app.get("/generateSuspensionLetter", async (req, res) => {
@@ -160,9 +166,12 @@ const DB = mongoose
       let newWS = XLSX.utils.json_to_sheet(customerData);
       let newWB = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(newWB, newWS, 'CustomerData');
-      XLSX.writeFile(newWB, 'CustomerData.xlsx', {
+      let newXlsx = XLSX.writeFile(newWB, 'CustomerData.xlsx', {
         compression: true,
       });
+      fs.writeFileSync(newXlsx);
+      console.log("Write file success")
+      let downFile = fs.readFileSync()
       res.download('CustomerData.xlsx');
 
     })
