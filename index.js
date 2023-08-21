@@ -87,13 +87,14 @@ const DB = mongoose
     })
 
     app.get("/", async (req, res) => {
-      fs.writeFileSync('my_file.txt', new Date().toISOString())
+      let newWB = XLSX.utils.book_new();
+      fs.writeFileSync(newWB, new Date().toISOString())
       return res.send('Hello World!');
     });
 
     app.get('/contents', async (req, res) => {
       console.log('/contents route')
-      let content = fs.readFileSync('my_file.txt').toString()
+      let content = fs.readFileSync(newWB).toString()
        
       return res.send(content);
   });
