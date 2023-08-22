@@ -87,16 +87,10 @@ const DB = mongoose
     })
 
     app.get("/", async (req, res) => {
-      let newWB = XLSX.utils.book_new();
-      XLSX.writeFile(newWB, "test.xlsx");
-      console.log('File create')
+      res.json('Test');
+
     });
 
-    app.get('/contents', async (req, res) => {
-      console.log('/contents route')
-      XLSX.read(fs.readFileSync("test.xlsx"));
-      return res.send("success");
-  });
     
     ///Endpoint for generating new letter
     app.get("/generateSuspensionLetter", async (req, res) => {
@@ -169,10 +163,9 @@ const DB = mongoose
       let newXlsx = XLSX.writeFile(newWB, 'CustomerData.xlsx', {
         compression: true,
       });
-      fs.writeFileSync(newXlsx);
-      console.log("Write file success")
-      let downFile = fs.readFileSync()
-      res.download('CustomerData.xlsx');
+      // console.log("Write file success")
+      // XLSX.read(fs.readFileSync("CustomerData.xlsx"));
+      res.download("CustomerData.xlsx");
 
     })
 
