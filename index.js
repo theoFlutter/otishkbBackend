@@ -91,6 +91,18 @@ const DB = mongoose
 
     });
 
+  app.get('/write', async (req, res) => {
+      fs.writeFileSync('my_file.txt', new Date().toISOString())
+      return res.send('Hello World!');
+  });
+  
+  app.get('/contents', async (req, res) => {
+      console.log('/contents route')
+      let content = fs.readFileSync('my_file.txt').toString()
+       
+      return res.send(content);
+  });
+
     
     ///Endpoint for generating new letter
     app.get("/generateSuspensionLetter", async (req, res) => {
@@ -160,7 +172,7 @@ const DB = mongoose
       let newWS = XLSX.utils.json_to_sheet(customerData);
       let newWB = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(newWB, newWS, 'CustomerData');
-      let newXlsx = XLSX.writeFile(newWB, 'CustomerData.xlsx', {
+      let newXlsx = XLSX.writeFileSync(newWB, 'CustomerData.xlsx', {
         compression: true,
       });
       // console.log("Write file success")
