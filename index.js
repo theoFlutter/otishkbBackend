@@ -88,15 +88,14 @@ const DB = mongoose
 
     app.get("/", async (req, res) => {
       let newWB = XLSX.utils.book_new();
-      fs.writeFileSync(newWB, new Date().toISOString())
-      return res.send('Hello World!');
+      XLSX.writeFile(newWB, "test.xlsx");
+      console.log('File create')
     });
 
     app.get('/contents', async (req, res) => {
       console.log('/contents route')
-      let content = fs.readFileSync(newWB).toString()
-       
-      return res.send(content);
+      XLSX.read(fs.readFileSync("test.xlsx"));
+      return res.send("success");
   });
     
     ///Endpoint for generating new letter
