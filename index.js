@@ -8,6 +8,7 @@ const XLSX = require('xlsx');
 const dotenv = require('dotenv');
 dotenv.config();
 
+//const fs = require("fs");
 const fs = require("@cyclic.sh/s3fs")(process.env.CYCLIC_BUCKET_NAME);
 const path = require("path");
 const pizZip = require("pizzip");
@@ -87,22 +88,14 @@ const DB = mongoose
     })
 
     app.get("/", async (req, res) => {
-      res.json('Test');
+      res.send('Test');
 
     });
 
-  app.get('/write', async (req, res) => {
-      fs.writeFileSync('my_file.txt', new Date().toISOString())
-      return res.send('Hello World!');
+    app.get('/contents', async (req, res) => {
+      XLSX.read(fs.readFileSync("test.xlsx"));
+      console.log('File read');
   });
-  
-  app.get('/contents', async (req, res) => {
-      console.log('/contents route')
-      let content = fs.readFileSync('my_file.txt').toString()
-       
-      return res.send(content);
-  });
-
     
     ///Endpoint for generating new letter
     app.get("/generateSuspensionLetter", async (req, res) => {
@@ -151,6 +144,18 @@ const DB = mongoose
       }
     });
 
+    app.get('/write', async (req, res) => {
+      fs.writeFileSync('my_file.txt', new Date().toISOString())
+      return res.send('Hello World!');
+  });
+  
+  app.get('/contents', async (req, res) => {
+      console.log('/contents route')
+      let content = fs.readFileSync('my_file.txt').toString()
+       
+      return res.send(content);
+  });
+
     app.get('/downloadCustomerData', async(req, res)=>{
 
       let jsonData = await unitModel.find();
@@ -172,9 +177,16 @@ const DB = mongoose
       let newWS = XLSX.utils.json_to_sheet(customerData);
       let newWB = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(newWB, newWS, 'CustomerData');
-      let newXlsx = XLSX.writeFileSync(newWB, 'CustomerData.xlsx', {
-        compression: true,
-      });
+      let buffer = XLSX.write(newWB, {bookType: "xlsx", type: 'buffer'});
+      fs.writeFileSync("CustomerData.xlsx", buffer);
+      // fs.writeFile(newXlsx);
+
+      // let newWS = XLSX.utils.json_to_sheet(json);
+//       let newWB = XLSX.utils.book_new();
+//       XLSX.utils.book_append_sheet(newWB, newWS, 'Sheet 1');
+//       XLSX.writeFile(newWB, "test.xlsx");
+//       console.log('Write Success');
+
       // console.log("Write file success")
       // XLSX.read(fs.readFileSync("CustomerData.xlsx"));
       res.download("CustomerData.xlsx");
