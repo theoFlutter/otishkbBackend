@@ -9,7 +9,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 //const fs = require("fs");
-const fs = require("@cyclic.sh/s3fs")(process.env.CYCLIC_BUCKET_NAME);
+const fs = require('@cyclic.sh/s3fs')(process.env.CYCLIC_BUCKET_NAME);
 const path = require("path");
 const pizZip = require("pizzip");
 const docxtemplater = require("docxtemplater");
@@ -177,8 +177,11 @@ const DB = mongoose
       let newWS = XLSX.utils.json_to_sheet(customerData);
       let newWB = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(newWB, newWS, 'CustomerData');
+      console.log('1');
       let buffer = XLSX.write(newWB, {bookType: "xlsx", type: 'buffer'});
+      console.log('2');
       fs.writeFileSync("CustomerData.xlsx", buffer);
+      console.log('3');
       // fs.writeFile(newXlsx);
 
       // let newWS = XLSX.utils.json_to_sheet(json);
