@@ -185,7 +185,7 @@ const DB = mongoose
       console.log('1');
       let buffer = XLSX.write(newWB, {bookType: "xlsx", type: 'buffer'});
       console.log('2');
-      fs.writeFileSync(path.join(__dirname, "/tmp/CustomerData.xlsx"), buffer);
+      fs.writeFileSync(path.resolve("/tmp/CustomerData.xlsx"), buffer);
       console.log('3');
       // fs.writeFile(newXlsx);
 
@@ -196,9 +196,9 @@ const DB = mongoose
 //       console.log('Write Success');
 
       // console.log("Write file success")
-      XLSX.read(fs.readFileSync(path.join(__dirname, "/tmp/CustomerData.xlsx")));
+      XLSX.read(fs.readFileSync(ppath.resolve("/tmp/CustomerData.xlsx")));
       console.log('Excel file read');
-      res.download(path.join(__dirname, "/tmp/CustomerData.xlsx"));
+      res.download(path.resolve("/tmp/CustomerData.xlsx"));
 
     })
 
