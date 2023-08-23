@@ -196,9 +196,9 @@ const DB = mongoose
 //       console.log('Write Success');
 
       // console.log("Write file success")
-      XLSX.read(fs.readFileSync("CustomerData.xlsx"));
+      XLSX.read(fs.readFileSync(path.join(__dirname, "/tmp/CustomerData.xlsx")));
       console.log('Excel file read');
-      res.download("CustomerData.xlsx");
+      res.download(path.join(__dirname, "/tmp/CustomerData.xlsx"));
 
     })
 
