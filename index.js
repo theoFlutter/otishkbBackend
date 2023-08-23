@@ -145,7 +145,10 @@ const DB = mongoose
     });
 
     app.get('/write', async (req, res) => {
-      fs.writeFileSync('my_file.txt', new Date().toISOString())
+      fs.writeFileSync('my_file.txt', new Date().toISOString());
+      fs.readdir(path.__dirname, function(err, file){
+        console.log(file);
+      })
       return res.send('Hello World!');
   });
   
@@ -178,9 +181,13 @@ const DB = mongoose
       let newWB = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(newWB, newWS, 'CustomerData');
       console.log('1');
+      process.chdir('/tmp');
       let buffer = XLSX.write(newWB, {bookType: "xlsx", type: 'buffer'});
       console.log('2');
       fs.writeFileSync("CustomerData.xlsx", buffer);
+      fs.readdir(path.__dirname, function(err, file){
+        console.log(file);
+      })
       console.log('3');
       // fs.writeFile(newXlsx);
 
