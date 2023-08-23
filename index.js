@@ -183,10 +183,9 @@ const DB = mongoose
       let newWB = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(newWB, newWS, 'CustomerData');
       console.log('1');
-      process.chdir(path.join(__dirname, '/tmp'));
       let buffer = XLSX.write(newWB, {bookType: "xlsx", type: 'buffer'});
       console.log('2');
-      fs.writeFileSync("CustomerData.xlsx", buffer);
+      fs.writeFileSync(path.join(__dirname, "/tmp/CustomerData.xlsx"), buffer);
       fs.readdir(path.__dirname, (err, file)=>{
         file.forEach((fil)=>{
           console.log(fil);
