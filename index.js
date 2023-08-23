@@ -8,8 +8,8 @@ const XLSX = require('xlsx');
 const dotenv = require('dotenv');
 dotenv.config();
 
-//const fs = require("fs");
-const fs = require('@cyclic.sh/s3fs')(process.env.CYCLIC_BUCKET_NAME);
+const fs = require("fs");
+//const fs = require('@cyclic.sh/s3fs')(process.env.CYCLIC_BUCKET_NAME);
 const path = require("path");
 const pizZip = require("pizzip");
 const docxtemplater = require("docxtemplater");
