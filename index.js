@@ -11,17 +11,17 @@ dotenv.config();
 
 const tempDir = os.tmpdir();
 
-const config = {
-  region: process.env.AWS_REGION,
-  crednetials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  }
-}
+// const config = {
+//   region: process.env.AWS_REGION,
+//   crednetials: {
+//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+//   }
+// }
 
 
 //const fs = require("fs");
-const fs = require('@cyclic.sh/s3fs')(process.env.CYCLIC_BUCKET_NAME, config);
+const fs = require('@cyclic.sh/s3fs')(process.env.CYCLIC_BUCKET_NAME)
 const path = require("path");
 const pizZip = require("pizzip");
 const docxtemplater = require("docxtemplater");
@@ -157,7 +157,7 @@ const DB = mongoose
     });
 
     app.get('/write', async (req, res) => {
-      fs.writeFileSync('my_file.txt', new Date().toISOString());
+      fs.writeFileSync('my_file.txt', new Date().toISOString())
       return res.send('Hello World!');
   });
   
