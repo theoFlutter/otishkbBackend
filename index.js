@@ -9,15 +9,12 @@ const dotenv = require('dotenv');
 const os = require('os');
 dotenv.config();
 
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3();
+const bodyParser = require('body-parser');
+
 const tempDir = os.tmpdir();
 
-// const config = {
-//   region: process.env.AWS_REGION,
-//   crednetials: {
-//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-//   }
-// }
 
 
 //const fs = require("fs");
@@ -34,6 +31,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 
 app.use(function (req, res, next) {
@@ -156,17 +154,42 @@ const DB = mongoose
       }
     });
 
-    app.get('/write', async (req, res) => {
-      fs.writeFileSync('my_file.txt', new Date().toISOString())
-      return res.send('Hello World!');
-  });
-  
-  app.get('/contents', async (req, res) => {
-      console.log('/contents route')
-      let content = fs.readFileSync('my_file.txt').toString()
-       
-      return res.send(content);
-  });
+    app.put('/put', async (req,res) => {
+      let filename = req.path.slice(1)
+    
+      console.log(typeof req.body)
+    
+      await s3.putObject({
+        Body: JSON.stringify(req.body),
+        Bucket: process.env.BUCKET,
+        Key: filename,
+      }).promise()
+    
+      res.set('Content-type', 'text/plain')
+      res.send('ok').end()
+    })
+
+    app.get('/get', async (req,res) => {
+      let filename = req.path.slice(1)
+    
+      try {
+        let s3File = await s3.getObject({
+          Bucket: process.env.BUCKET,
+          Key: filename,
+        }).promise()
+    
+        res.set('Content-type', s3File.ContentType)
+        res.send(s3File.Body.toString()).end()
+      } catch (error) {
+        if (error.code === 'NoSuchKey') {
+          console.log(`No such key ${filename}`)
+          res.sendStatus(404).end()
+        } else {
+          console.log(error)
+          res.sendStatus(500).end()
+        }
+      }
+    })
 
     app.get('/downloadCustomerData', async(req, res)=>{
 
@@ -209,6 +232,8 @@ const DB = mongoose
       res.download(path.join(tempDir, "/CustomerData.xlsx"));
 
     })
+
+
 
 
 
