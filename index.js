@@ -6,7 +6,10 @@ const server = http.createServer(app);
 const cors = require("cors");
 const XLSX = require('xlsx');
 const dotenv = require('dotenv');
+const os = require('os');
 dotenv.config();
+
+const tempDir = os.tmpdir();
 
 const config = {
   region: process.env.AWS_REGION,
@@ -190,7 +193,7 @@ const DB = mongoose
       console.log('1');
       let buffer = XLSX.write(newWB, {bookType: "xlsx", type: 'buffer'});
       console.log('2');
-      fs.writeFileSync(path.join(__dirname, "/CustomerData.xlsx"), buffer);
+      fs.writeFileSync(path.join(tempDir, "/CustomerData.xlsx"), buffer);
       console.log('3');
       // fs.writeFile(newXlsx);
 
@@ -201,9 +204,9 @@ const DB = mongoose
 //       console.log('Write Success');
 
       // console.log("Write file success")
-      XLSX.read(fs.readFileSync(path.join(__dirname, "/CustomerData.xlsx")));
+      XLSX.read(fs.readFileSync(path.join(tempDir, "/CustomerData.xlsx")));
       console.log('Excel file read');
-      res.download(path.join(__dirname, "/CustomerData.xlsx"));
+      res.download(path.join(tempDir, "/CustomerData.xlsx"));
 
     })
 
