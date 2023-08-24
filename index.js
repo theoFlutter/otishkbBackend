@@ -8,8 +8,17 @@ const XLSX = require('xlsx');
 const dotenv = require('dotenv');
 dotenv.config();
 
+const config = {
+  region: process.env.AWS_REGION,
+  crednetials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  }
+}
+
+
 //const fs = require("fs");
-const fs = require('@cyclic.sh/s3fs')(process.env.CYCLIC_BUCKET_NAME);
+const fs = require('@cyclic.sh/s3fs')(process.env.CYCLIC_BUCKET_NAME, config);
 const path = require("path");
 const pizZip = require("pizzip");
 const docxtemplater = require("docxtemplater");
@@ -88,7 +97,7 @@ const DB = mongoose
     })
 
     app.get("/", async (req, res) => {
-      res.send('Test');
+      res.send(process.cwd());
 
     });
 
